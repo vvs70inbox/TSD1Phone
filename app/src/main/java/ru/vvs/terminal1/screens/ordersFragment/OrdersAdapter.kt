@@ -32,6 +32,7 @@ class OrdersAdapter: RecyclerView.Adapter<OrdersAdapter.OrdersViewHolder>() {
         holder.itemView.findViewById<TextView>(R.id.item_positions).text ="${listMain[position].positions} тов."
         holder.itemView.findViewById<TextView>(R.id.item_products).text = "${listMain[position].products} шт."
         holder.itemView.findViewById<TextView>(R.id.item_amount).text = listMain[position].amount.toString()
+        holder.itemView.findViewById<TextView>(R.id.item_sales).text = listMain[position].sales.toString()
     }
 
     fun setList(list: List<Order>) {

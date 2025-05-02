@@ -16,11 +16,11 @@ interface CartsDao: BaseDao<CartItem> {
     @Query("DELETE FROM carts_table")
     suspend fun clearTable()
 
-    @Query("SELECT * from carts_table")
+    @Query("SELECT * FROM carts_table ORDER BY Product")
     suspend fun getAllCarts(): List<CartItem>
 
     @Query("SELECT * from carts_table WHERE Barcode = :barcode")
-    suspend fun getCartByBarcode(barcode: String): CartItem
+    suspend fun getCartByBarcode(barcode: String): CartItem?
 
     @Query("SELECT * from carts_table WHERE Product = :product")
     suspend fun getCartsByProduct(product: String): List<CartItem>

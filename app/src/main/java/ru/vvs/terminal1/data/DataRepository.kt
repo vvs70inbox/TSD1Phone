@@ -30,7 +30,7 @@ class DataRepository(private val cartsDao: CartsDao) {
         }
     }
 
-    suspend fun getCartByBarcode(barcode: String): CartItem {
+    suspend fun getCartByBarcode(barcode: String): CartItem? {
         return cartsDao.getCartByBarcode(barcode)
     }
 

@@ -10,8 +10,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            isAllowInsecureProtocol = true
+            url=uri("http://47.108.228.164:8081/nexus/service/local/repositories/releases/content/")
+        }
     }
 }
 
-rootProject.name = "Terminal1"
+rootProject.name = "TSD1Phone"
 include(":app")

@@ -12,10 +12,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.vvs.terminal1.MainActivity
 import ru.vvs.terminal1.R
+import ru.vvs.terminal1.data.DataRepository
 import ru.vvs.terminal1.data.ItemsOrderRepository
 import ru.vvs.terminal1.data.retrofit.api.RetrofitInstance
 import ru.vvs.terminal1.data.room.CartsDatabase
 import ru.vvs.terminal1.mainActivity
+import ru.vvs.terminal1.model.CartItem
 import ru.vvs.terminal1.model.ItemsOrder
 import ru.vvs.terminal1.model.Order
 import ru.vvs.terminal1.model.Order1C
@@ -23,6 +25,7 @@ import ru.vvs.terminal1.model.Order1C
 class OrderViewModel(application: Application): AndroidViewModel(application) {
 
     private val repository: ItemsOrderRepository
+    private val repositoryCarts: DataRepository
 
     private var _myItemsList: MutableLiveData<List<ItemsOrder>> = MutableLiveData()
     val myItemsList: LiveData<List<ItemsOrder>> = _myItemsList
@@ -31,7 +34,9 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
 
     init {
         val itemsDao = CartsDatabase.getInstance(application).getAllItemsFromOrder()
+        val cartDao = CartsDatabase.getInstance(application).getCartsDao()
         repository = ItemsOrderRepository(itemsDao)
+        repositoryCarts = DataRepository(cartDao)
     }
 
     fun getItems(orderId: Int) {
@@ -45,7 +50,20 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
             repository.updateOrder(order)
         }
     }
+    fun getCartByBarcode(barcode: String, orderId: Int) {
 
+        viewModelScope.launch(Dispatchers.IO) {
+            val foundCart: CartItem? = repositoryCarts.getCartByBarcode(barcode)
+            if (foundCart != null) updateItem(barcode, orderId)
+        }
+
+    }
+    fun getCartItemByBarcode(barcode: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val foundCart: CartItem? = repositoryCarts.getCartByBarcode(barcode)
+            if (foundCart != null) OrderFragment.clickCart(foundCart)
+        }
+    }
     private fun getItemByBarcode(barcode: String): ItemsOrder? {
         return myItemsList.value!!.find { it.Barcode == barcode }
     }
@@ -84,7 +102,7 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun createOrderIn1C() {
+    fun createOrderIn1C(orderNum: String, orderSales: String) {
         if (!MainActivity.isOnline(mainActivity)) {
             Toast.makeText(mainActivity, mainActivity.getString(R.string.error_internet), Toast.LENGTH_LONG).show()
         } else {
@@ -97,8 +115,8 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val response = RetrofitInstance.api.postOrder(
-                        "VVS",
-                        "999",
+                        orderSales,
+                        orderNum,
                         order1C
                     ) //RetrofitClient.apiService.createUser(user)
 

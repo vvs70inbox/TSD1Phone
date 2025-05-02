@@ -1,12 +1,15 @@
 package ru.vvs.terminal1.screens.mainFragment.cartFragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import ru.vvs.terminal1.Translit
 import ru.vvs.terminal1.mainActivity
 import ru.vvs.terminal1.databinding.FragmentCartBinding
 import ru.vvs.terminal1.model.CartItem
@@ -16,7 +19,7 @@ class CartFragment : Fragment() {
 
     private var mBinding: FragmentCartBinding?= null
     private val binding get() = mBinding!!
-    lateinit var currentCart: CartItem
+    private lateinit var currentCart: CartItem
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CartAdapter
@@ -51,7 +54,7 @@ class CartFragment : Fragment() {
             adapter.setList(list)
         }
 
-        binding.cartGroup.text = currentCart.GroupString.substringBeforeLast("/").substringAfterLast("/")
+        //binding.cartGroup.text = currentCart.GroupString.substringBeforeLast("/").substringAfterLast("/")
         binding.cartName.text = currentCart.Product.substringBefore(",")
         binding.cartNameEnglish.text = currentCart.Product.substringAfter(",").trim()
         binding.cartCharacter.text = currentCart.Character
@@ -60,7 +63,15 @@ class CartFragment : Fragment() {
         binding.cartProduction.text = currentCart.Production.toString()
         binding.cartReserve.text = currentCart.Reserve.toString()
         binding.cartPrice.text = currentCart.Price.toString()
+        binding.cartDescription.text = currentCart.Description
 
+        binding.cartButton.setOnClickListener {
+            val url = "https://yoly-paly.ru/catalog/" +
+                    Translit.Cyr2Lat(
+                        currentCart.GroupString.dropLast(1).split('/').last()) + "/" + Translit.Cyr2Lat(currentCart.Product) + "/"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = url.toUri()
+            startActivity(i) }
     }
 
 

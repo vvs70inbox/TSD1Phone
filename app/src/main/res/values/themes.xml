@@ -14,11 +14,7 @@
         <item name="android:layout_marginTop">16dp</item>
     </style>
 
-    <style name="BaseTextHint">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="ProfileValueTextView" parent="BaseTextHint">
+    <style name="ProfileValueTextView">
         <item name="android:layout_width">120dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
@@ -28,7 +24,7 @@
         <item name="android:lines">1</item>
     </style>
 
-    <style name="TitleTextView" parent="BaseTextHint">
+    <style name="TitleTextView">
         <item name="android:textSize">18sp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_width">0dp</item>

@@ -1,6 +1,10 @@
 package ru.vvs.terminal1.screens.mainFragment
 
+//import android.app.AlertDialog
+//import android.app.Dialog
+//import android.content.DialogInterface
 import android.os.Bundle
+//import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +13,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+//import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
@@ -22,7 +26,10 @@ import com.google.mlkit.common.MlKitException
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
-import ru.vvs.terminal1.MainActivity
+//import com.xcheng.scanner.BarcodeType
+//import com.xcheng.scanner.LicenseState
+//import com.xcheng.scanner.XcBarcodeScanner
+//import ru.vvs.terminal1.MainActivity
 import ru.vvs.terminal1.mainActivity
 import ru.vvs.terminal1.R
 import ru.vvs.terminal1.databinding.FragmentMainBinding
@@ -57,13 +64,26 @@ class MainFragment : Fragment() {
         init()
     }
 
+//    private fun showAlertDialog(
+//        title: String,
+//        msg: String,
+//        cancelAble: Boolean,
+//        positiveButton: String,
+//        positiveButtonCb: DialogInterface.OnClickListener?
+//    ) {
+//        val alertDialogBuilder = AlertDialog.Builder(mainActivity)
+//        alertDialogBuilder.setTitle(title)
+//        alertDialogBuilder.setCancelable(cancelAble)
+//        alertDialogBuilder.setMessage(msg)
+//        alertDialogBuilder.setPositiveButton(positiveButton, positiveButtonCb)
+//        val dialog: Dialog = alertDialogBuilder.create()
+//        //dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+//        dialog.show()
+//    }
+
     private fun init() {
         mainActivity.actionBar.title = "Работа с картотекой"
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
-        recyclerView = binding.mainFragment
-        adapter = MainAdapter()
-        recyclerView.adapter = adapter
 
         viewModel.isProgress.observe(viewLifecycleOwner) { bool ->
             when(bool) {
@@ -86,6 +106,10 @@ class MainFragment : Fragment() {
             viewModel.getCarts(false)
         }
 
+        recyclerView = binding.mainFragment
+        adapter = MainAdapter()
+        recyclerView.adapter = adapter
+
         viewModel.myCartList.observe(viewLifecycleOwner) { list ->
             adapter.setList(list)
         }
@@ -102,26 +126,28 @@ class MainFragment : Fragment() {
             gmsBarcodeScanner
                 .startScan()
                 .addOnSuccessListener { barcode: Barcode ->
-                    viewModel.cartItem.observe(viewLifecycleOwner) { cart ->
-                        if (cart !=null) {
-                            when (cart.Barcode.substring(0, 2)) {
-                                "27" -> if (cart.Barcode == barcode.rawValue) clickMovie(cart)
+//                    viewModel.cartItem.observe(viewLifecycleOwner) { cart ->
+//                        if (cart !=null) {
+                            when (barcode.rawValue!!.substring(0, 1)) {
+                                "2" ->  {
+                                    //поиск по barcode, возврат CartItem во ViewMidel
+                                    viewModel.getCartByBarcode(barcode.rawValue!!)
+                                }
                                 else -> Toast.makeText(
                                     mainActivity,
                                     "Штрихкод начинается не на 27!",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
-                        }
-                        else
-                        {Toast.makeText(
-                            mainActivity,
-                            "Штрихкод не обнаружен - товара нет!",
-                            Toast.LENGTH_LONG
-                        ).show()}
-                    }
-                    //поиск по barcode, возврат CartItem во ViewMidel
-                    viewModel.getCartByBarcode(barcode.rawValue!!)
+//                        }
+//                        else
+//                        {Toast.makeText(
+//                            mainActivity,
+//                            "Штрихкод не обнаружен - товара нет!",
+//                            Toast.LENGTH_LONG
+//                        ).show()}
+//                    }
+
                 }
                 .addOnFailureListener { e: Exception -> Log.d("MLKit",getErrorMessage(e)!!) }//barcodeResultView!!.text = getErrorMessage(e)
                 .addOnCanceledListener {
@@ -150,7 +176,7 @@ class MainFragment : Fragment() {
                             override fun onQueryTextChange(msg: String): Boolean {
                                 // inside on query text change method we are
                                 // calling a method to filter our recycler view.
-                                filter(msg)
+                                adapter.filter.filter(msg)
                                 return false
                             }
                         })
@@ -175,28 +201,106 @@ class MainFragment : Fragment() {
         menuHost.addMenuProvider(provider)
     }
 
-    private fun filter(text: String) {
-        // creating a new array list to filter our data.
-        val filteredlist: ArrayList<CartItem> = ArrayList()
+//    private fun filter(text: String) {
+//        // creating a new array list to filter our data.
+//        val filteredlist: ArrayList<CartItem> = ArrayList()
+//
+//        // running a for loop to compare elements.
+//        for (item in adapter.listMain) {
+//            // checking if the entered string matched with any item of our recycler view.
+//            if (item.Product.lowercase().contains(text.lowercase())) {
+//                // if the item is matched we are
+//                // adding it to our filtered list.
+//                filteredlist.add(item)
+//            }
+//        }
+//        if (filteredlist.isEmpty()) {
+//            // if no item is added in filtered list we are
+//            // displaying a toast message as no data found.
+//            Toast.makeText(mainActivity, "No Data Found..", Toast.LENGTH_SHORT).show()
+//        } else {
+//            // at last we are passing that filtered
+//            // list to our adapter class.
+//            adapter.filterList(filteredlist)
+//        }
+//    }
 
-        // running a for loop to compare elements.
-        for (item in adapter.listMain) {
-            // checking if the entered string matched with any item of our recycler view.
-            if (item.Product.lowercase().contains(text.lowercase())) {
-                // if the item is matched we are
-                // adding it to our filtered list.
-                filteredlist.add(item)
+/* TSD
+    private fun connectScanService() {
+        XcBarcodeScanner.init(mainActivity) { result ->
+            mainActivity.runOnUiThread {
+                //showAlertDialog("", result, false, "OK", null)
+                Toast.makeText(mainActivity, result, Toast.LENGTH_SHORT).show()
+                when (result.substring(0, 1)) {
+                    "2" -> {
+                        viewModel.getCartByBarcode(result)
+//                        viewModel.cartItem.observe(viewLifecycleOwner) { cart ->
+//                            if (View() != null)
+//                            clickMovie(cart)
+//                        }
+                    }
+                    else -> Toast.makeText(
+                        mainActivity,
+                        "Штрихкод начинается не на 27!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
-        if (filteredlist.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
-            Toast.makeText(mainActivity, "No Data Found..", Toast.LENGTH_SHORT).show()
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
-            adapter.filterList(filteredlist)
+    }
+
+
+    private fun onScanServiceStateChanged() {
+        val isServiceSuspending = XcBarcodeScanner.isScanServiceSuspending()
+
+        if (isServiceSuspending) {
+            XcBarcodeScanner.resumeScanService()
         }
+    }
+
+ */
+
+    override fun onResume() {
+        super.onResume()
+/* TSD
+        // Connect with scan service
+        Log.d(Companion.TAG, "Connect barcode service")
+        connectScanService()
+*/
+        viewModel.cartItem.observe(viewLifecycleOwner) { cart ->
+                            clickMovie(cart)
+                        }
+/* TSD
+        // Get SDK version and ScannerService version.
+        // This need connection ready, simply delay 0.5 second after connect.
+        Handler().postDelayed({
+            mainActivity.runOnUiThread { // Get sdk version
+                val sdkVer = XcBarcodeScanner.getSdkVersion(mainActivity)
+
+                // Get service version
+                val serviceVer = XcBarcodeScanner.getServiceVersion()
+
+                onScanServiceStateChanged()
+
+                // Get license state
+                val licState = XcBarcodeScanner.getLicenseState()
+                var licMsg = ""
+            }
+        }, 500)
+
+        XcBarcodeScanner.setTextPrefix("Empty")
+        XcBarcodeScanner.setTextSuffix("Empty")
+        XcBarcodeScanner.enableBarcodeType(BarcodeType.QRCODE, false)
+ */
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        viewModel.cartItem.observe(viewLifecycleOwner) {}
+/* TSD
+        XcBarcodeScanner.deInit(mainActivity)
+ */
     }
 
     override fun onDestroyView() {
@@ -233,10 +337,12 @@ class MainFragment : Fragment() {
     }
 
     companion object {
+//        private const val TAG = "Mertech"
         fun clickMovie(cart: CartItem) {
             val bundle = Bundle()
             bundle.putSerializable("cart", cart)
-            mainActivity.navController.navigate(R.id.action_mainFragment_to_cartFragment, bundle)
+            if (mainActivity.navController.currentDestination?.id == R.id.mainFragment)
+                mainActivity.navController.navigate(R.id.action_mainFragment_to_cartFragment, bundle)
         }
     }
 

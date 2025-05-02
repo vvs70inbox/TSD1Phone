@@ -48,7 +48,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun getCartByBarcode(barcode: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
-            cartItem.postValue(repository.getCartByBarcode(barcode))
+            val foundCart: CartItem? = repository.getCartByBarcode(barcode)
+            if (foundCart != null) cartItem.postValue(foundCart!!)
         }
 
     }

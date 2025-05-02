@@ -8,6 +8,8 @@ import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.ActionBar
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -21,6 +23,7 @@ import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
+import androidx.navigation.findNavController
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,11 +35,15 @@ class MainActivity : AppCompatActivity() {
     lateinit var settings: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mainActivity = this
-        navController = Navigation.findNavController(this, R.id.nav_fragment)
+        navController = this.findNavController(R.id.nav_fragment)
         actionBar = supportActionBar!!
 
         val moduleInstall = ModuleInstall.getClient(this)
@@ -65,20 +72,20 @@ class MainActivity : AppCompatActivity() {
     companion object {
         fun isOnline(context: Context): Boolean {
             val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
             if (connectivityManager != null) {
                 val capabilities =
                     connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
                 if (capabilities != null) {
                     if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                         Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                        return true //pingHost("91.230.197.241")
+                        return pingHost("91.230.197.241")
                     } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                         Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                        return true //pingHost("91.230.197.241")
+                        return pingHost("91.230.197.241")
                     } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
                         Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                        return true //pingHost("91.230.197.241")
+                        return pingHost("91.230.197.241")
                     }
                 }
             }
@@ -95,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             return false*/
             return try {
                 val sock = Socket()
-                sock.connect(InetSocketAddress("91.230.197.241", 81), 1500)
+                sock.connect(InetSocketAddress(ipAddress, 81), 1500)
                 sock.close()
                 true
             } catch (e: IOException) {

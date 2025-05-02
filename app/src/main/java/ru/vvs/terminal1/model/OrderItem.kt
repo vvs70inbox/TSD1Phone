@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
 data class OrderItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    @ColumnInfo(name = "order_id")
+    @ColumnInfo(name = "order_id", index = true)
     val orderId: Int,
     val barcode: String,
     var counts: Int

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "359069347bb3b649a9943afffb150c14",
+    "identityHash": "cda6fa9b77e2cac5b489aa261425bb47",
     "entities": [
       {
         "tableName": "carts_table",
@@ -98,9 +98,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "orders_table",
@@ -154,9 +152,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "orders_item_table",
@@ -193,7 +189,17 @@
             "id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_orders_item_table_order_id",
+            "unique": false,
+            "columnNames": [
+              "order_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_orders_item_table_order_id` ON `${TABLE_NAME}` (`order_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "orders_table",
@@ -272,9 +278,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "sale_items_table",
@@ -323,7 +327,17 @@
             "id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_sale_items_table_order_id",
+            "unique": false,
+            "columnNames": [
+              "order_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sale_items_table_order_id` ON `${TABLE_NAME}` (`order_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "sales_table",
@@ -339,10 +353,9 @@
         ]
       }
     ],
-    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '359069347bb3b649a9943afffb150c14')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cda6fa9b77e2cac5b489aa261425bb47')"
     ]
   }
 }

@@ -16,7 +16,7 @@ class OrdersRepository(private val ordersDao: OrdersDao) {
 
     suspend fun newOrder() : Order {
         val count = ordersDao.getCount()+1
-        val order = Order(count, "Заказ", count.toString(), LocalDate.now().toString(), 0, 0, 0)
+        val order = Order(count, "Заказ", count.toString(), LocalDate.now().toString(), "",0, 0, 0)
 
         ordersDao.insert(order)
         return order

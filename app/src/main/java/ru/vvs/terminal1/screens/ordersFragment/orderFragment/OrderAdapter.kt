@@ -32,8 +32,20 @@ class OrderAdapter(private val onItemClick: (position: Int) -> Unit): RecyclerVi
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        holder.itemView.findViewById<TextView>(R.id.item_product_order).text = listMain[position].Product
-        holder.itemView.findViewById<TextView>(R.id.item_character_order).text = listMain[position].Character
+        var characterTrim1: String = ""
+        var characterTrim2: String = ""
+        holder.itemView.findViewById<TextView>(R.id.item_product_order).text = listMain[position].Product.substringBefore(",")
+        characterTrim1 = listMain[position].Character.substringAfter(",")
+        characterTrim2 = characterTrim1.substringAfter(",").substringBefore(",")
+        characterTrim1 = characterTrim1.substringBefore(",")
+        holder.itemView.findViewById<TextView>(R.id.item_character_order).text =
+            buildString {
+                append(listMain[position].Character.substringBefore(","))
+                append(",")
+                append(characterTrim1)
+                append(",")
+                append(characterTrim2)
+            }
         holder.itemView.findViewById<TextView>(R.id.item_barcode_order).text = listMain[position].Barcode
         holder.itemView.findViewById<TextView>(R.id.item_price_order).text = listMain[position].Price.toString()
         holder.itemView.findViewById<TextView>(R.id.item_count_order).text = listMain[position].counts.toString()

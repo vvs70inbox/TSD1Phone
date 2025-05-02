@@ -14,10 +14,10 @@ import ru.vvs.terminal1.model.OrderItem
 @Dao
 interface DaoItemsOrder {
 
-        @Query("SELECT carts_table.Product, carts_table.Character, carts_table.Barcode, carts_table.Price, orders_item_table.counts FROM orders_item_table, carts_table WHERE (orders_item_table.Barcode == carts_table.Barcode) AND orders_item_table.order_id == :id")
+        @Query("SELECT carts_table.GroupString, carts_table.Product, carts_table.Character, carts_table.Barcode, carts_table.Price, orders_item_table.counts FROM orders_item_table, carts_table WHERE (orders_item_table.Barcode == carts_table.Barcode) AND orders_item_table.order_id == :id")
         suspend fun getItemsOrder(id: Int): List<ItemsOrder>
 
-        @Query("SELECT carts_table.Product, carts_table.Character, carts_table.Barcode, carts_table.Price, orders_item_table.counts FROM orders_item_table, carts_table WHERE (orders_item_table.Barcode == carts_table.Barcode) AND orders_item_table.barcode == :barcode AND orders_item_table.order_id == :orderId")
+        @Query("SELECT carts_table.GroupString,carts_table.Product, carts_table.Character, carts_table.Barcode, carts_table.Price, orders_item_table.counts FROM orders_item_table, carts_table WHERE (orders_item_table.Barcode == carts_table.Barcode) AND orders_item_table.barcode == :barcode AND orders_item_table.order_id == :orderId")
         suspend fun getItemByBarcode(barcode: String, orderId: Int): ItemsOrder
 
         @Query("SELECT * FROM orders_item_table WHERE barcode == :barcode AND order_id == :orderId")

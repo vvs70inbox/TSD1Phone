@@ -106,39 +106,6 @@ class OrdersFragment : Fragment() {
                     //    toast("clicked neutral button")
                     //}
                 }.create().show()
-
-                // this method is called when we swipe our item to right direction.
-                // on below line we are getting the item at a particular position.
-                ////val deletedCourse: ItemsOrder =
-                ////viewModel.myItemsList.value!!.get(viewHolder.adapterPosition)
-                //-//courseList.get(viewHolder.adapterPosition)
-
-                // below line is to get the position
-                // of the item at that position.
-                ////val position = viewHolder.adapterPosition
-
-
-                // this method is called when item is swiped.
-                // below line is to remove item from our array list.
-                ////courseList.removeAt(viewHolder.adapterPosition)
-
-                // below line is to notify our item is removed from adapter.
-                ////adapter.notifyItemRemoved(viewHolder.adapterPosition)
-
-                // below line is to display our snackbar with action.
-                /*                Snackbar.make(recyclerView, "Deleted " + deletedCourse.Product, Snackbar.LENGTH_LONG)
-                                    .setAction(
-                                        "Undo",
-                                        View.OnClickListener {
-                                            // adding on click listener to our action of snack bar.
-                                            // below line is to add our item to array list with a position.
-                                            ////courseList.add(position, deletedCourse)
-
-                                            // below line is to notify item is
-                                            // added to our adapter class.
-                                            //adapter.notifyItemInserted(position)
-                                            Toast.makeText(MAIN, "Пробуем свайп", Toast.LENGTH_SHORT).show()
-                                        }).show()*/
             }
 
         }).attachToRecyclerView(recyclerView)

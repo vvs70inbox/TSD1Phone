@@ -12,6 +12,7 @@ data class Order(
     val name: String,
     val number: String,
     val date: String,
+    var sales: String,
     var positions: Int,
     var products: Int,
     var amount: Int

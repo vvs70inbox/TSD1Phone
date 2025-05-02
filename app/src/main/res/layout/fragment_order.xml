@@ -12,40 +12,41 @@
         android:id="@+id/orderNumberTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Номер"
         android:textSize="16dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/orderNumber"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="Номер заказа"
         android:textSize="16dp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/orderNumberTitle"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/orderDateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="от"
         android:textSize="16dp"
-        android:layout_marginStart="16dp"
         app:layout_constraintStart_toEndOf="@+id/orderNumber"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/orderDate"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Номер заказа"
         android:textSize="16dp"
         android:textStyle="bold"
@@ -57,22 +58,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Примечание"
+        android:text="Продавец"
         android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/orderNumber" />
-
-    <TextView
-        android:id="@+id/orderNote"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Примечание"
-        android:textSize="16dp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toEndOf="@+id/orderNoteTitle"
-        app:layout_constraintTop_toBottomOf="@+id/orderNumber" />
 
     <TextView
         android:id="@+id/orderPositions"
@@ -111,10 +100,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/orderNote"
         app:layout_constraintBottom_toTopOf="@id/orderProducts"
+        app:layout_constraintTop_toBottomOf="@+id/orderNoteTitle"
         tools:layout_editor_absoluteX="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -127,6 +115,34 @@
             app:layout_constraintTop_toBottomOf="@+id/orderNote"
             tools:listitem="@layout/item_order_layout" />
     </ScrollView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="поз."
+        app:layout_constraintStart_toEndOf="@+id/orderPositions"
+        app:layout_constraintTop_toTopOf="@+id/orderPositions" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="руб."
+        app:layout_constraintStart_toEndOf="@+id/orderAmount"
+        app:layout_constraintTop_toTopOf="@+id/orderAmount" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:spinnerMode="dialog"
+        app:layout_constraintBottom_toBottomOf="@+id/orderNoteTitle"
+        app:layout_constraintStart_toEndOf="@+id/orderNoteTitle"
+        app:layout_constraintTop_toTopOf="@+id/orderNoteTitle" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabOrder"
