@@ -22,7 +22,7 @@ import ru.vvs.terminal1.model.ItemsOrder
 import ru.vvs.terminal1.model.Order
 import ru.vvs.terminal1.model.Order1C
 
-class OrderViewModel(application: Application): AndroidViewModel(application) {
+class OrderViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: ItemsOrderRepository
     private val repositoryCarts: DataRepository
@@ -50,6 +50,7 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
             repository.updateOrder(order)
         }
     }
+
     fun getCartByBarcode(barcode: String, orderId: Int) {
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -58,12 +59,14 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
         }
 
     }
+
     fun getCartItemByBarcode(barcode: String) {
         viewModelScope.launch(Dispatchers.Main) {
             val foundCart: CartItem? = repositoryCarts.getCartByBarcode(barcode)
             if (foundCart != null) OrderFragment.clickCart(foundCart)
         }
     }
+
     private fun getItemByBarcode(barcode: String): ItemsOrder? {
         return myItemsList.value!!.find { it.Barcode == barcode }
     }
@@ -87,7 +90,7 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
 
     fun updateItemCount(itemsOrder: ItemsOrder, orderId: Int, counts: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _myItemsList.value!!.find{ it.Barcode == itemsOrder.Barcode }!!.counts = counts
+            _myItemsList.value!!.find { it.Barcode == itemsOrder.Barcode }!!.counts = counts
             repository.updateItemCount(itemsOrder, orderId)
             getItems(orderId)
         }
@@ -97,22 +100,28 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
         val itemsOrder = myItemsList.value!![position]
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteItem(itemsOrder.Barcode, orderId)
-            _myItemsList.postValue(_myItemsList.value!!.toMutableList().apply { removeAt(position)})
+            _myItemsList.postValue(
+                _myItemsList.value!!.toMutableList().apply { removeAt(position) })
             getItems(orderId)
         }
     }
 
     fun createOrderIn1C(orderNum: String, orderSales: String) {
-        if (!MainActivity.isOnline(mainActivity)) {
-            Toast.makeText(mainActivity, mainActivity.getString(R.string.error_internet), Toast.LENGTH_LONG).show()
-        } else {
-            val order1C: MutableList<Order1C> = mutableListOf()
 
-            myItemsList.value!!.forEach {
-                order1C.add(0, Order1C(it.Barcode, it.counts.toString()))
-            }
+        val order1C: MutableList<Order1C> = mutableListOf()
 
-            viewModelScope.launch(Dispatchers.IO) {
+        myItemsList.value!!.forEach {
+            order1C.add(0, Order1C(it.Barcode, it.counts.toString()))
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!MainActivity.isOnline(mainActivity)) {
+                Toast.makeText(
+                    mainActivity,
+                    mainActivity.getString(R.string.error_internet),
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
                 try {
                     val response = RetrofitInstance.api.postOrder(
                         orderSales,
@@ -123,8 +132,11 @@ class OrderViewModel(application: Application): AndroidViewModel(application) {
                     if (response.isSuccessful) {
                         Log.d("createOrderIn1C", "Order created")
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(mainActivity,
-                                mainActivity.getString(R.string.message_order_to_1c), Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                mainActivity,
+                                mainActivity.getString(R.string.message_order_to_1c),
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                     } else {

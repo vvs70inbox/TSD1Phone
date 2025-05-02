@@ -234,6 +234,12 @@ class OrderFragment : Fragment() {
                     R.id.actionUnload -> {
                         viewModel.createOrderIn1C(currentOrder.number.trim(), currentOrder.sales)
                     }
+                    R.id.actionChoice -> {
+                        // переход в картотеку для выбора товара
+                        val bundle = Bundle()
+                        bundle.putSerializable("order", currentOrder)
+                        mainActivity.navController.navigate(R.id.action_orderFragment_to_cartsFragment,bundle)
+                    }
                 }
                 return true
             }

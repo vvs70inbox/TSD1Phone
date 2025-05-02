@@ -5,15 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/actionChoice"
+        android:id="@+id/actionSearch"
         android:icon="@android:drawable/ic_menu_search"
-        android:title="Choice"
-        app:showAsAction="ifRoom|collapseActionView"/>
-
-    <item
-        android:id="@+id/actionUnload"
-        android:icon="@drawable/baseline_cloud_upload_24"
-        android:title="Unload"
+        android:title="Search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
 
 </menu>

@@ -21,7 +21,7 @@ interface DaoItemsOrder {
         suspend fun getItemByBarcode(barcode: String, orderId: Int): ItemsOrder
 
         @Query("SELECT * FROM orders_item_table WHERE barcode == :barcode AND order_id == :orderId")
-        suspend fun getItemOrderByBarcode(barcode: String, orderId: Int): OrderItem
+        suspend fun getItemOrderByBarcode(barcode: String, orderId: Int): OrderItem?
 
         @Insert(onConflict = OnConflictStrategy.IGNORE)
         suspend fun InsertItem(orderItem: OrderItem)

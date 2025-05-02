@@ -67,6 +67,9 @@
         <action
             android:id="@+id/action_orderFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_orderFragment_to_cartsFragment"
+            app:destination="@id/cartsFragment" />
     </fragment>
     <fragment
         android:id="@+id/salesFragment"
@@ -86,5 +89,13 @@
         <action
             android:id="@+id/action_saleFragment_to_salesFragment"
             app:destination="@id/salesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartsFragment"
+        android:name="ru.vvs.terminal1.screens.ordersFragment.orderFragment.cartsFragment.CartsFragment"
+        android:label="CartsFragment" >
+        <action
+            android:id="@+id/action_cartsFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
     </fragment>
 </navigation>
