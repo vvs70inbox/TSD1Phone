@@ -154,7 +154,7 @@ class OrderFragment : Fragment() {
                 return listOf(
                     UnderlayButton(
                         mainActivity,
-                        "Delete",
+                        "Удалить",
                         14f,
                         android.R.color.holo_red_light,
                         R.drawable.baseline_delete_24,
@@ -189,7 +189,7 @@ class OrderFragment : Fragment() {
                     ),
                     UnderlayButton(
                         mainActivity,
-                        "Edit",
+                        "Карточка",
                         14f,
                         android.R.color.holo_blue_light,
                         R.drawable.baseline_qr_code_scanner_24,

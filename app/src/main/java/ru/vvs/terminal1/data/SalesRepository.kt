@@ -12,8 +12,8 @@ class SalesRepository(private val salesDao: SalesDao, private val salesItemDao: 
     }
 
     suspend fun getSaleByNumberAndDate(number: String, date: String): Boolean {
-        val sale = salesDao.getSale(number, date)?: return false
-        return true
+        val  sale = salesDao.getSale(number, date)
+        return sale != null
     }
 
     suspend fun newSale(sale: Sale) {

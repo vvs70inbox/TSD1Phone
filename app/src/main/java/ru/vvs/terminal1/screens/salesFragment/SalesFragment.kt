@@ -43,7 +43,7 @@ class SalesFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         mBinding = FragmentSalesBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -136,6 +136,7 @@ class SalesFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
 
     companion object {
+        const val TAG = "Mertech"
         fun clickSale(order: Sale) {
             val bundle = Bundle()
             bundle.putSerializable("order", order)

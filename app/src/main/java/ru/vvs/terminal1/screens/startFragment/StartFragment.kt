@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import ru.vvs.terminal1.MainActivity
 import ru.vvs.terminal1.R
 import ru.vvs.terminal1.databinding.FragmentStartBinding
+import ru.vvs.terminal1.mainActivity
 
 class StartFragment : Fragment() {
 
@@ -33,6 +34,11 @@ class StartFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainActivity.actionBar.title = "Работа на телефоне"
     }
 
     override fun onDestroyView() {
