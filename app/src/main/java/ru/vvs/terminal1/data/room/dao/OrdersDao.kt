@@ -2,6 +2,7 @@ package ru.vvs.terminal1.data.room.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Update
 import ru.vvs.terminal1.model.CartItem
 import ru.vvs.terminal1.model.Order
 

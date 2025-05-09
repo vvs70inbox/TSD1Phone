@@ -25,4 +25,8 @@ class OrdersRepository(private val ordersDao: OrdersDao) {
     suspend fun deleteOrder(order: Order) {
         ordersDao.delete(order)
     }
+
+    suspend fun updateOrder(order: Order) {
+        ordersDao.update(order)
+    }
 }

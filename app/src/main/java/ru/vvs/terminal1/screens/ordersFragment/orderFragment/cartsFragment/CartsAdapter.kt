@@ -95,7 +95,7 @@ class CartsAdapter(private val onItemClick: (position: Int) -> Unit): RecyclerVi
                     listMainFilter = listMain
                 } else {
                     val resultList = ArrayList<CartItem>()
-                    for (row in listMainFilter) {
+                    for (row in listMain) {
                         charCount = 0
                         for (ch in charSearch) {
                             if (row.Product.lowercase().contains(ch.lowercase())) {

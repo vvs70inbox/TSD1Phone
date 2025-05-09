@@ -14,6 +14,7 @@ import ru.vvs.terminal1.MainActivity
 import ru.vvs.terminal1.R
 import ru.vvs.terminal1.data.DataRepository
 import ru.vvs.terminal1.data.ItemsOrderRepository
+import ru.vvs.terminal1.data.OrdersRepository
 import ru.vvs.terminal1.data.retrofit.api.RetrofitInstance
 import ru.vvs.terminal1.data.room.CartsDatabase
 import ru.vvs.terminal1.mainActivity
@@ -26,17 +27,27 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: ItemsOrderRepository
     private val repositoryCarts: DataRepository
+    private val repositoryOrders: OrdersRepository
 
     private var _myItemsList: MutableLiveData<List<ItemsOrder>> = MutableLiveData()
     val myItemsList: LiveData<List<ItemsOrder>> = _myItemsList
+
+    private val _currentOrder: MutableLiveData<Order> = MutableLiveData<Order>()
+    val currentOrder: LiveData<Order> = _currentOrder
 
     var itemOrder: MutableLiveData<ItemsOrder> = MutableLiveData()
 
     init {
         val itemsDao = CartsDatabase.getInstance(application).getAllItemsFromOrder()
         val cartDao = CartsDatabase.getInstance(application).getCartsDao()
+        val ordersDao = CartsDatabase.getInstance(application).getOrdersDao()
         repository = ItemsOrderRepository(itemsDao)
         repositoryCarts = DataRepository(cartDao)
+        repositoryOrders = OrdersRepository(ordersDao)
+    }
+
+    fun setOrder(order: Order) {
+        _currentOrder.value = order
     }
 
     fun getItems(orderId: Int) {
@@ -47,17 +58,15 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateOrder(order: Order) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateOrder(order)
+            repositoryOrders.updateOrder(order)
         }
     }
 
     fun getCartByBarcode(barcode: String, orderId: Int) {
-
         viewModelScope.launch(Dispatchers.IO) {
             val foundCart: CartItem? = repositoryCarts.getCartByBarcode(barcode)
             if (foundCart != null) updateItem(barcode, orderId)
         }
-
     }
 
     fun getCartItemByBarcode(barcode: String) {

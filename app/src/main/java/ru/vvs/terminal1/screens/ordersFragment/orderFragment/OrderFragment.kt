@@ -1,14 +1,16 @@
 package ru.vvs.terminal1.screens.ordersFragment.orderFragment
 
-import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 //import android.net.Uri
-import android.os.Bundle
 //import android.os.Handler
 //import android.util.Log
-import androidx.fragment.app.Fragment
+//import android.widget.ArrayAdapter
+//import com.xcheng.scanner.BarcodeType
+//import com.xcheng.scanner.XcBarcodeScanner
+import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,31 +18,28 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-//import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-//import com.xcheng.scanner.BarcodeType
-//import com.xcheng.scanner.XcBarcodeScanner
-import ru.vvs.terminal1.mainActivity
-import ru.vvs.terminal1.R
-import ru.vvs.terminal1.SwipeHelper
-import ru.vvs.terminal1.databinding.FragmentOrderBinding
-import ru.vvs.terminal1.model.Order
-import androidx.core.net.toUri
-import ru.vvs.terminal1.Translit
-import androidx.core.content.edit
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
+import ru.vvs.terminal1.R
+import ru.vvs.terminal1.SwipeHelper
+import ru.vvs.terminal1.databinding.FragmentOrderBinding
+import ru.vvs.terminal1.mainActivity
 import ru.vvs.terminal1.model.CartItem
+import ru.vvs.terminal1.model.Order
 
 class OrderFragment : Fragment() {
 
@@ -56,7 +55,10 @@ class OrderFragment : Fragment() {
 
     private lateinit var sharedpreferences: SharedPreferences
 
-    lateinit var currentOrder: Order
+    private lateinit var currentOrder: Order
+
+//    private val _currentOrder: MutableLiveData<Order> = MutableLiveData<Order>()
+//    val currentOrder: LiveData<Order> = _currentOrder
 
     private var allowManualInput = false
     private var enableAutoZoom = false //true
@@ -88,6 +90,8 @@ class OrderFragment : Fragment() {
         adapter = OrderAdapter() { position -> onItemClick(position) }
         recyclerView.adapter = adapter
 
+        viewModel.setOrder(currentOrder)
+
         val sales = resources.getStringArray(R.array.Sales)
 
         sharedpreferences =
@@ -96,13 +100,11 @@ class OrderFragment : Fragment() {
 
         // access the spinner
         val spinner = binding.spinner
-
         //val adapterSales = ArrayAdapter(mainActivity, android.R.layout.simple_spinner_item, sales)
-
         spinner.adapter = ItemAdapter(mainActivity, sales.toList()) //adapterSales
 
-        if (currentOrder.sales != "")
-            spinner.setSelection(sales.indexOf(currentOrder.sales))
+        if (viewModel.currentOrder.value!!.sales != "")
+            spinner.setSelection(sales.indexOf(viewModel.currentOrder.value!!.sales))
         else
             if (salesPref != null)
                 spinner.setSelection(sales.indexOf(salesPref))
@@ -113,7 +115,7 @@ class OrderFragment : Fragment() {
                 parent: AdapterView<*>,
                 view: View?, position: Int, id: Long
             ) {
-                currentOrder.sales = sales[position]
+                viewModel.currentOrder.value!!.sales = sales[position]
                 // calling method to edit values in shared prefs.
                 sharedpreferences.edit() {
                     putString(SALES_KEY, sales[position])
@@ -127,26 +129,64 @@ class OrderFragment : Fragment() {
             }
         }
 
+        viewModel.currentOrder.observe(viewLifecycleOwner) { order ->
+            binding.orderComment.text = order.name
+
+            binding.orderPositions.text = order.positions.toString()
+            binding.orderAmount.text = order.amount.toString()
+            binding.orderProducts.text = order.products.toString()
+            viewModel.updateOrder(order)
+        }
+
         binding.orderNumber.text = currentOrder.number
         binding.orderDate.text = currentOrder.date
-        //binding.orderNote.text = currentOrder.name
+        binding.orderComment.text = currentOrder.name
 
-        binding.orderPositions.text = currentOrder.positions.toString()
-        binding.orderAmount.text = currentOrder.amount.toString()
-        binding.orderProducts.text = currentOrder.products.toString()
+        binding.orderComment.setOnClickListener(View.OnClickListener {
+            val alertDialogBuilder = AlertDialog.Builder(mainActivity)
+            alertDialogBuilder.setTitle("Комментарий")
+            // Set up the input
+            val input = EditText(requireContext())
+            input.setText(currentOrder.name)
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.inputType = InputType.TYPE_CLASS_TEXT //or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            alertDialogBuilder.setView(input)
+            // Set up the buttons
+            alertDialogBuilder.setPositiveButton("OK" ) { _, _ ->
+                currentOrder.name = input.text.toString()
+                viewModel.setOrder(currentOrder) }
+            alertDialogBuilder.setNegativeButton("Cancel" ) { dialog, _ -> dialog.cancel() }
+            alertDialogBuilder.show()
+
+        })
+
+//        binding.orderComment.setText(currentOrder.name)
+//        binding.orderComment.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                currentOrder.name = p0!!.toString()
+//            }
+//
+//            override fun afterTextChanged(p0: Editable?) {}
+//
+//        })
+
+        binding.orderPositions.text = viewModel.currentOrder.value!!.positions.toString()
+        binding.orderAmount.text = viewModel.currentOrder.value!!.amount.toString()
+        binding.orderProducts.text = viewModel.currentOrder.value!!.products.toString()
 
         viewModel.itemOrder.observe(viewLifecycleOwner) { } // снимаем наблюдение
         viewModel.itemOrder = MutableLiveData()
 
-        viewModel.getItems(currentOrder.id)
+        viewModel.getItems(viewModel.currentOrder.value!!.id)
         viewModel.myItemsList.observe(viewLifecycleOwner) { list ->
             adapter.setList(list)
             currentOrder.products = list.sumOf { it.counts }
             currentOrder.amount = list.sumOf { it.counts * it.Price }
             currentOrder.positions = list.count()
-            binding.orderPositions.text = currentOrder.positions.toString()
-            binding.orderAmount.text = currentOrder.amount.toString()
-            binding.orderProducts.text = currentOrder.products.toString()
+
+            viewModel.setOrder(currentOrder)
         }
 
         val swipeHelper = object : SwipeHelper(recyclerView) {
@@ -173,12 +213,12 @@ class OrderFragment : Fragment() {
                                         //toast("clicked positive button")
                                         viewModel.swipeItem(
                                             pos,
-                                            currentOrder.id
+                                            viewModel.currentOrder.value!!.id
                                         )
                                     }
                                     setNegativeButton("НЕТ") { _, _ ->
                                         //toast("clicked negative button")
-                                        viewModel.getItems(currentOrder.id)
+                                        viewModel.getItems(viewModel.currentOrder.value!!.id)
                                     }
                                     //setNeutralButton("Neutral") { _, _ ->
                                     //    toast("clicked neutral button")
@@ -232,12 +272,12 @@ class OrderFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.actionUnload -> {
-                        viewModel.createOrderIn1C(currentOrder.number.trim(), currentOrder.sales)
+                        viewModel.createOrderIn1C(viewModel.currentOrder.value!!.number.trim(), viewModel.currentOrder.value!!.sales)
                     }
                     R.id.actionChoice -> {
                         // переход в картотеку для выбора товара
                         val bundle = Bundle()
-                        bundle.putSerializable("order", currentOrder)
+                        bundle.putSerializable("order", viewModel.currentOrder.value!!)
                         mainActivity.navController.navigate(R.id.action_orderFragment_to_cartsFragment,bundle)
                     }
                 }
@@ -261,7 +301,7 @@ class OrderFragment : Fragment() {
                     when (barcode.rawValue!!.substring(0, 1)) {
                         "2" -> // изменяем кол-во
                         {
-                            viewModel.getCartByBarcode(barcode.rawValue!!, currentOrder.id)
+                            viewModel.getCartByBarcode(barcode.rawValue!!, viewModel.currentOrder.value!!.id)
                             //if (cart.Barcode == barcode.rawValue) Toast.makeText(MAIN, "ВСЁ ОК!!!!!", Toast.LENGTH_LONG).show()
                         }
                         else -> Toast.makeText(mainActivity, "Штрихкод начинается не на 27!", Toast.LENGTH_LONG).show()
@@ -364,7 +404,7 @@ class OrderFragment : Fragment() {
 */
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.updateOrder(currentOrder)
+        //viewModel.updateOrder(currentOrder.value!!)
         mBinding = null
         menuHost.removeMenuProvider(provider)
     }
@@ -392,7 +432,7 @@ class OrderFragment : Fragment() {
             }
 
             if (oldCounts != newCounts && newCounts != 0) {
-                viewModel.updateItemCount(itemsOrder, currentOrder.id, newCounts)
+                viewModel.updateItemCount(itemsOrder, viewModel.currentOrder.value!!.id, newCounts)
             }
         }
         builder.show()

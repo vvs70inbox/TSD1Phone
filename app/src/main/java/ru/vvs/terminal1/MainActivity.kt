@@ -1,9 +1,8 @@
 package ru.vvs.terminal1
 
 import android.content.Context
-import android.content.SharedPreferences
+//import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import android.net.InetAddresses
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,15 +11,11 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.ActionBar
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import com.google.android.gms.common.moduleinstall.ModuleInstall
 import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import ru.vvs.terminal1.databinding.ActivityMainBinding
 import java.io.IOException
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 import androidx.navigation.findNavController
@@ -32,9 +27,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
     lateinit var actionBar: ActionBar
 
-    lateinit var settings: SharedPreferences
+    //lateinit var settings: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //enableEdgeToEdge()
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,

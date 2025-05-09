@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Номер заказа"
+        android:text="Дата заказа"
         android:textSize="16dp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/orderDateTitle"
@@ -57,9 +57,9 @@
         android:id="@+id/orderNoteTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Продавец"
-        android:textSize="16dp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/orderNumber" />
 
@@ -102,7 +102,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/orderProducts"
-        app:layout_constraintTop_toBottomOf="@+id/orderNoteTitle"
+        app:layout_constraintTop_toBottomOf="@+id/orderComment"
         tools:layout_editor_absoluteX="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -154,5 +154,18 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         app:srcCompat="@drawable/baseline_qr_code_scanner_24" />
+
+    <TextView
+        android:id="@+id/orderComment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Примечание"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderNoteTitle">
+
+    </TextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@ import java.io.Serializable
 data class Order(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val name: String,
+    var name: String,
     val number: String,
     val date: String,
     var sales: String,

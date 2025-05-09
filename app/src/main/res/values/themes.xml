@@ -3,6 +3,8 @@
     <style name="Base.Theme.Terminal1" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="Theme.Terminal1" parent="Base.Theme.Terminal1" />
