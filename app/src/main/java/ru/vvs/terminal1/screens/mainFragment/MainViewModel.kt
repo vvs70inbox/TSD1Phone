@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.vvs.terminal1.MainActivity
 import ru.vvs.terminal1.data.DataRepository
 import ru.vvs.terminal1.data.room.CartsDatabase
@@ -50,6 +51,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             val foundCart: CartItem? = repository.getCartByBarcode(barcode)
             if (foundCart != null) cartItem.postValue(foundCart!!)
+            else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        mainActivity,
+                        "Штрихкод не найден!!!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
 
     }

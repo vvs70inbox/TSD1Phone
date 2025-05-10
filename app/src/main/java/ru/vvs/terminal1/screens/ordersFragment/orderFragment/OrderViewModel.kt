@@ -66,6 +66,15 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             val foundCart: CartItem? = repositoryCarts.getCartByBarcode(barcode)
             if (foundCart != null) updateItem(barcode, orderId)
+            else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        mainActivity,
+                        "Штрихкод не найден!!!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
     }
 
@@ -73,6 +82,15 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.Main) {
             val foundCart: CartItem? = repositoryCarts.getCartByBarcode(barcode)
             if (foundCart != null) OrderFragment.clickCart(foundCart)
+            else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        mainActivity,
+                        "Штрихкод не найден!!!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
     }
 
