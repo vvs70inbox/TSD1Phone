@@ -148,21 +148,17 @@
             android:text="Description"
             android:textSize="14sp" />
 
-        <ScrollView
-            android:id="@+id/scrollView2"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="8dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/itemsCharacterLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:importantForAutofill="yes"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="5"
                 tools:listitem="@layout/item_character_layout" />
 
-        </ScrollView>
 
         <Button
             android:id="@+id/cartButton"

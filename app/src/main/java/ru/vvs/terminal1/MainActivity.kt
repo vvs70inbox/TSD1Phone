@@ -1,6 +1,7 @@
 package ru.vvs.terminal1
 
 import android.content.Context
+import android.content.pm.PackageManager
 //import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -19,10 +20,12 @@ import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
+import ru.vvs.terminal1.screens.startFragment.StartFragment.Companion.PERMISSION_REQUEST_STORAGE
 
 class MainActivity : AppCompatActivity() {
 
-    private var mBinding: ActivityMainBinding?= null
+    private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
     lateinit var navController: NavController
     lateinit var actionBar: ActionBar
@@ -33,8 +36,10 @@ class MainActivity : AppCompatActivity() {
         //enableEdgeToEdge()
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        )
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -66,6 +71,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val APP_VERSION = "2.0.1"
+        var appUpdate = false
+
         fun isOnline(context: Context): Boolean {
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
@@ -87,15 +95,16 @@ class MainActivity : AppCompatActivity() {
             }
             return false
         }
+
         private fun pingHost(ipAddress: String): Boolean {
             //val ipAddress = "www.google.com"
-/*            try {
-                val inet = InetAddress.getByName(ipAddress)
-                return inet.isReachable(1000)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            return false*/
+            /*            try {
+                            val inet = InetAddress.getByName(ipAddress)
+                            return inet.isReachable(1000)
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                        return false*/
             return try {
                 val sock = Socket()
                 sock.connect(InetSocketAddress(ipAddress, 81), 1500)

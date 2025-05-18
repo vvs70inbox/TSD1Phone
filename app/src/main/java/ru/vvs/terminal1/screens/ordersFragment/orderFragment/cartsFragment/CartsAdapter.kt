@@ -48,7 +48,7 @@ class CartsAdapter(private val onItemClick: (position: Int) -> Unit): RecyclerVi
                 append(",")
                 append(characterTrim2)
             }
-        holder.itemView.findViewById<TextView>(R.id.item_count).text = listMainFilter[position].Quantity.toString()
+        holder.itemView.findViewById<TextView>(R.id.item_count).text = (listMainFilter[position].Quantity-listMainFilter[position].Reserve).toString()
         holder.itemView.findViewById<TextView>(R.id.item_price).text = listMainFilter[position].Price.toString()
     }
 
